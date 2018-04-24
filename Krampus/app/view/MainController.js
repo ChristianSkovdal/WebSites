@@ -56,12 +56,12 @@ Ext.define('Krampus.view.MainController', {
                 Ext.defer(() => {
                     t.setActiveItem({
 
-                        xtype:'beertile'
-    
-                    });
-                }, rand(100,500))
+                        xtype: 'beertile'
 
-        });
+                    });
+                }, rand(100, 500))
+
+            });
     },
 
     tileClick(parent) {
@@ -71,12 +71,14 @@ Ext.define('Krampus.view.MainController', {
     },
 
     initPostitTile(cmp) {
+
+
         let style = '';
         if (cmp.getParent().centerTile) {
             style = `background-image: url(img/logo.jpg);background-size: contain;`;
         }
         else {
-            style = `background-image: url(img/tiles/${rand(1, 28)}.jpg);background-size: cover;`;
+            style = `background-image: url(img/tiles/${cmp.getParent().pictureIndex}.jpg);background-size: cover;`;
         }
         cmp.setStyle(style);
         cmp.el.on('click', function (e) {
@@ -108,6 +110,24 @@ Ext.define('Krampus.view.MainController', {
             max = 3;
         }
 
+        function shuffle(array) {
+            var tmp, current, top = array.length;
+            if (top) while (--top) {
+                current = Math.floor(Math.random() * (top + 1));
+                tmp = array[current];
+                array[current] = array[top];
+                array[top] = tmp;
+            }
+            return array;
+        };
+
+        let picstack = [];
+        for (let index = 1; index < 28; index++) {
+            picstack.push(index);
+        }
+        picstack = shuffle(picstack);
+        debugger;
+
         for (var i = 0; i < max; i++) {
 
             let col = cmp.add({
@@ -118,15 +138,20 @@ Ext.define('Krampus.view.MainController', {
 
             let dims = (size - max * margin * 2) / max
 
-            for (var j = 0; j < max; j++) {
 
-                let center = (i == (max - 1) / 2) && (j == (max - 1) / 2);
+            for (var j = 0; j < max; j++) {
 
                 let r = rand(-10, 10);
                 let m = rand(-10, 10);
 
+                let center = (i == (max - 1) / 2) && (j == (max - 1) / 2);
+
+                // let style = center ? `background-image: url(img/logo.jpg);background-size: contain;`:
+                //                      `background-image: url(img/tiles/${rand(1, 28)}.jpg);background-size: cover;`
                 col.add({
                     centerTile: center,
+                    pictureIndex: picstack.pop(),
+                    //style: style,
                     xtype: 'frontpagetile',
                     margin: m,
                     shadow: true,
